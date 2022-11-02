@@ -1,0 +1,33 @@
+import /vendor/etc/init/hw/init.${ro.hardware}.usb.rc
+import /vendor/etc/init/hw/init.ram.rc
+import /vendor/etc/init/hw/init.storage.rc
+import /vendor/etc/init/hw/init.cali.rc
+import /vendor/etc/init/hw/init.factorytest.rc
+
+on init
+    start watchdogd
+
+on post-fs-data
+    setprop vold.post_fs_data_done 1
+    # restorecon for stune
+    restorecon /dev/stune
+    setprop debug.sf.disable_backpressure 1
+    setprop debug.sf.latch_unsignaled 1
+
+# Set watchdog timer to 30 seconds and pet it every 10 seconds to get a 20 second margin
+service watchdogd /system/bin/watchdogd 10 30
+    class core
+    oneshot
+    seclabel u:r:watchdogd:s0
+#+ExtR IRU-187,songyuanqiao@wingtech.com,ADD,20210317
+on init && property:ro.boot.ddrsize=1024M
+    setprop dalvik.vm.heapgrowthlimit 64m
+    setprop dalvik.vm.heapmaxfree 4m
+    setprop dalvik.vm.heapminfree 512k
+    setprop dalvik.vm.heapsize 128m
+    setprop dalvik.vm.heapstartsize 4m
+    setprop dalvik.vm.heaptargetutilization 0.75
+    setprop ro.lmk.low 900
+    setprop ro.lmk.medium 700
+    setprop ro.lmk.critical 0
+#+ExtR IRU-187,songyuanqiao@wingtech.com,ADD,20210317

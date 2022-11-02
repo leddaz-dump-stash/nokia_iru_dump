@@ -1,0 +1,17 @@
+service interfaces.factoryInterface@1.0-service /vendor/bin/hw/interfaces.factoryInterface@1.0-service
+    class late_start
+    user root
+    group root system sdcard_rw sdcard_r media_rw oem_2901 radio
+    oneshot
+    seclabel u:r:factory_services:s0
+
+on property:ro.factory_mode=1
+    start interfaces.factoryInterface@1.0-service
+
+service delete_finger_file /vendor/bin/delete_finger_file
+    class core
+    user system
+    group system
+    oneshot
+    disabled
+    seclabel u:r:toolbox:s0

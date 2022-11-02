@@ -1,0 +1,62 @@
+on boot
+    write /sys/class/android_usb/android0/f_mass_storage/board_support_luns 1
+
+on early-fs
+    export EXTERNAL_STORAGE /storage/self/primary
+    symlink /mnt/user/0/emulated /mnt/runtime/default/self/emulated
+
+on init
+    mkdir /mnt/vendor/productinfo 0771 system system
+#ExtB IRU-523 chenjindong.wt,add.20210309,creat new partition hmdodm
+    mkdir /mnt/hmdodm 0771 system system
+#+ExtB IRU-591 chenjindong.wt,add,20210307,creat new partition elabel
+    mkdir /mnt/vendor/elabel 0771 system system
+    chmod 777 /mnt/vendor/elabel
+#-ExtB IIRU-591 chenjindong.wt,add,20210307,creat new partition elabel
+    chown system system /sys/devices/proinfo/factoryreset_date
+    chmod 0664 /sys/devices/proinfo/factoryreset_date
+#+ExtR IRU-838,baiyun1.wt,ADD,20210312,read the remote lock flag from miscdata partition
+#+ExtR IRU-842,baiyun1.wt,ADD,20210312,write the remote lock flag to miscdata partition
+    chown system system /sys/devices/proinfo/remote_lock_value
+    chmod 0664 /sys/devices/proinfo/remote_lock_value
+#-ExtR IRS-838,baiyun1.wt,ADD,20210312,read the remote lock flag from miscdata partition
+#-ExtR IRS-842,baiyun1.wt,ADD,20210312,write the remote lock flag to miscdata partition
+#+ExtR IRU-818,baiyun1.wt,ADD,20210315,Block/Unlock hardward factory reset option
+    chown system system /sys/devices/proinfo/block_factory_reset
+    chmod 0664 /sys/devices/proinfo/block_factory_reset
+#-ExtR IRU-818,baiyun1.wt,ADD,20210315,Block/Unlock hardward factory reset option
+#+ExtR IRS-821,baiyun1.wt,ADD,20210315,Block/unlock Device getting into fastboot mode
+    chown system system /sys/devices/proinfo/block_fastboot_mode
+    chmod 0664 /sys/devices/proinfo/block_fastboot_mode
+#-ExtR IRS-821,baiyun1.wt,ADD,20210315,Block/unlock Device getting into fastboot mode
+
+    # SPRD: add for storage manage @{
+    export EMULATED_STORAGE /storage/self/emulated
+    export PHYSICAL_STORAGE /storage/sdcard0
+    export USBDISK_STORAGE /storage/usbdisk
+    symlink /storage/self/primary /mnt/sdcard
+    # @}
+
+    # SPRD: add for OTG usb disk @{
+    mkdir /mnt/media_rw/usbdisk 0700 media_rw media_rw
+    mkdir /storage/usbdisk 0700 system system
+    symlink /storage/usbdisk /mnt/usbdisk
+    # @}
+
+on post-fs
+    mkdir /mnt/vendor/productinfo 0771 system system
+
+#+ExtB IRU-532&533 yanrenjie.wt,add,20210326,optimize the way to create the default facebook config file and dynammically setup
+service facebook_services /system/bin/facebook_services
+    class main
+    user root
+    group system
+    disabled
+    oneshot
+
+on post-fs-data
+    start facebook_services
+
+on property:sys.boot_completed=1
+    stop facebook_services
+#-ExtB IRU-532&533 yanrenjie.wt,add,20210326,optimize the way to create the default facebook config file and dynammically setup    

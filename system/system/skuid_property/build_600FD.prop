@@ -1,0 +1,10 @@
+# ADDITIONAL CUSTOM PROPERTIES
+ro.product.system.name=Irisumts_00FD
+sys.facebook.exist=true
+ro.product.model.num=00FD
+ro.build.display.id=00WW_1_050
+ro.product.name=Irisumts_00FD
+ro.build.fingerprint=Nokia/Irisumts_00FD/IRU:11/RP1A.201005.001/00WW_1_050:user/release-keys
+ro.build.product.name=Irisumts_00FD
+android.os.Build.PRODUCT=Irisumts_00FD
+android.os.Build.FINGERPRINT=Nokia/Irisumts_00FD/IRU:11/RP1A.201005.001/00WW_1_050:user/release-keys
